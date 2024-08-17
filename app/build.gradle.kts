@@ -1,3 +1,5 @@
+import java.lang.System.getProperty
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -25,6 +27,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Reference the API key from gradle.properties
+        buildConfigField("String", "API_KEY", "\"${getProperty("MY_API_KEY")}\"")
     }
 
     buildTypes {
