@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
     // Remote data source
-    suspend fun getNewsHeadline(): Resource<ApiResponse>
+    suspend fun getNewsHeadline(country:String, page:Int): Resource<ApiResponse>
     suspend fun getSearchedNews(searchQuery: String): Resource<ApiResponse>
 
     // local data source

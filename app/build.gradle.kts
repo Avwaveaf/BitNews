@@ -3,10 +3,10 @@ import java.lang.System.getProperty
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-kapt")
+    id("org.jetbrains.kotlin.kapt")
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
-
+    id("androidx.navigation.safeargs")
 }
 
 android {
@@ -30,11 +30,13 @@ android {
 
         // Reference the API key from gradle.properties
         buildConfigField("String", "API_KEY", "\"${getProperty("MY_API_KEY")}\"")
+        buildConfigField("String", "BASE_URL", "\"${getProperty("NEWS_API_BASE_URL")}\"")
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true  // Enables code shrinking, optimization, and obfuscation
+            isShrinkResources = true  // Removes unused resources
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -50,15 +52,23 @@ android {
     }
 
     buildFeatures{
-        dataBinding = true
+        viewBinding = true
+        buildConfig = true
     }
 }
 
 dependencies {
 
+    //NAVIGATION COMPONENT DEPS
+    val nav_version = "2.7.7"
+    // Kotlin
+    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+
     // HILT DEPS
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation("com.google.dagger:hilt-android:2.48")
+    kapt("com.google.dagger:hilt-android-compiler:2.48")
+
 
     //RETROFIT DEPS
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
@@ -85,7 +95,7 @@ dependencies {
     val room_version = "2.6.1"
 
     implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
     // To use Kotlin Symbol Processing (KSP)
     ksp("androidx.room:room-compiler:$room_version")
     // optional - Kotlin Extensions and Coroutines support for Room
@@ -95,6 +105,18 @@ dependencies {
     // COROUTINES DEPS
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    //RETROFIT DEPS
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    //LOGGING-INTERCEPTOR
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+
+    // GLIDE DEPS (IMAGE LOADING)
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    ksp("com.github.bumptech.glide:compiler:4.14.2")
+
 
 
 
@@ -108,7 +130,3 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 }
 
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
-}
