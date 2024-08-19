@@ -4,5 +4,6 @@ import com.avwaveaf.bitnews.data.models.ApiResponse
 import retrofit2.Response
 
 interface NewsRemoteDataSource {
-    suspend fun getTopHeadlines(country:String, page:Int): Response<ApiResponse>
+    suspend fun getTopHeadlines(country: String, page: Int): Response<ApiResponse>
+    suspend fun getSearchedNews(searchQuery: String, page:Int): Response<ApiResponse>
 }
