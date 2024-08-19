@@ -33,7 +33,7 @@ interface NewsApiService {
         sortBy: String = "popularity",
 
         @Query("from")
-        dateFrom: String = getLastMonthDate(),
+        dateFrom: String = getLastWeekDate(),
 
         @Query("to")
         dateTo: String = getCurrentDate(),
@@ -52,9 +52,9 @@ interface NewsApiService {
             return dateFormat.format(calendar.time)
         }
 
-        private fun getLastMonthDate(): String {
+        private fun getLastWeekDate(): String {
             val calendar = Calendar.getInstance()
-            calendar.add(Calendar.MONTH, -1)
+            calendar.add(Calendar.DAY_OF_YEAR, -7)  // Subtract 7 days
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             return dateFormat.format(calendar.time)
         }

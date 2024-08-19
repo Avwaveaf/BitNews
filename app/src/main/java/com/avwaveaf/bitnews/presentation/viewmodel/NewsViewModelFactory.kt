@@ -5,14 +5,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.avwaveaf.bitnews.domain.usecase.GetNewsHeadlinesUseCase
 import com.avwaveaf.bitnews.domain.usecase.GetSearchedNewsUseCase
+import com.avwaveaf.bitnews.domain.usecase.SaveNewsUseCase
 
 @Suppress("UNCHECKED_CAST")
 class NewsViewModelFactory(
     private val app: Application,
     private val getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase,
-    private val getSearchedNewsUseCase: GetSearchedNewsUseCase
+    private val getSearchedNewsUseCase: GetSearchedNewsUseCase,
+    private val saveNewsUseCase: SaveNewsUseCase
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return NewsViewModel(app, getNewsHeadlinesUseCase, getSearchedNewsUseCase) as T
+        return NewsViewModel(
+            app,
+            getNewsHeadlinesUseCase,
+            getSearchedNewsUseCase,
+            saveNewsUseCase
+        ) as T
     }
 }

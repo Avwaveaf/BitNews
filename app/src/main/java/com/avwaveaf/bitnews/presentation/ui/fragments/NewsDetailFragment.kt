@@ -5,12 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import com.avwaveaf.bitnews.R
 import com.avwaveaf.bitnews.data.models.Article
 import com.avwaveaf.bitnews.databinding.FragmentNewsDetailBinding
 
@@ -20,6 +23,25 @@ class NewsDetailFragment : Fragment() {
     private val args: NewsDetailFragmentArgs by navArgs()
     private val selectedArticle: Article
         get() = args.selectedArticle
+
+    private var isFabExpanding = false
+
+
+    private val emergeFromBottomAnim: Animation by lazy {
+        AnimationUtils.loadAnimation(context, R.anim.emerge_from_bottom)
+    }
+
+    private val emergeToBottomAnim: Animation by lazy {
+        AnimationUtils.loadAnimation(context, R.anim.emerge_to_bottom)
+    }
+
+    private val rotateClockwiseAnim: Animation by lazy {
+        AnimationUtils.loadAnimation(context, R.anim.rotate_clockwise)
+    }
+
+    private val rotateCounterClockwiseAnim: Animation by lazy {
+        AnimationUtils.loadAnimation(context, R.anim.rotate_counter_clockwise)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +55,83 @@ class NewsDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupWebView()
+        fabSetup()
+        setupOverlayBgFab()
     }
+
+    private fun setupOverlayBgFab() {
+        binding.overlayView.setOnClickListener {
+            if (isFabExpanding) {
+                minifyFab()
+            }
+        }
+    }
+
+
+    private fun fabSetup() {
+        binding.triggerMenuOpenFab.setOnClickListener {
+            if (isFabExpanding) {
+                minifyFab()
+            } else {
+                expandFab()
+            }
+        }
+    }
+
+    private fun expandFab() {
+        // Set the FABs and texts to visible before starting the animation
+        binding.saveFab.visibility = View.VISIBLE
+        binding.saveFabHintTv.visibility = View.VISIBLE
+        binding.shareFab.visibility = View.VISIBLE
+        binding.shareFabHintTv.visibility = View.VISIBLE
+
+        // Show overlay to detect clicks outside the FAB menu
+        binding.overlayView.visibility = View.VISIBLE
+
+        // Rotate the main FAB
+        binding.triggerMenuOpenFab.startAnimation(rotateClockwiseAnim)
+
+        // Emerge the FAB along with its text
+        binding.saveFab.startAnimation(emergeFromBottomAnim)
+        binding.saveFabHintTv.startAnimation(emergeFromBottomAnim)
+        binding.shareFab.startAnimation(emergeFromBottomAnim)
+        binding.shareFabHintTv.startAnimation(emergeFromBottomAnim)
+
+
+
+        isFabExpanding = true
+    }
+
+    private fun minifyFab() {
+        // Rotate the main FAB
+        binding.triggerMenuOpenFab.startAnimation(rotateCounterClockwiseAnim)
+
+        // Collapse the FAB
+        binding.saveFab.startAnimation(emergeToBottomAnim)
+        binding.saveFabHintTv.startAnimation(emergeToBottomAnim)
+        binding.shareFab.startAnimation(emergeToBottomAnim)
+        binding.shareFabHintTv.startAnimation(emergeToBottomAnim)
+
+        // Hide the overlay
+        binding.overlayView.visibility = View.GONE
+
+        // Set the FABs and texts to GONE after the animation ends
+        emergeToBottomAnim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation) {}
+
+            override fun onAnimationEnd(animation: Animation) {
+                binding.saveFab.visibility = View.GONE
+                binding.saveFabHintTv.visibility = View.GONE
+                binding.shareFab.visibility = View.GONE
+                binding.shareFabHintTv.visibility = View.GONE
+            }
+
+            override fun onAnimationRepeat(animation: Animation) {}
+        })
+
+        isFabExpanding = false
+    }
+
 
     private fun setupWebView() {
         Log.i("WEBVIEW", "${selectedArticle.title} url: ${selectedArticle.url}")
@@ -44,7 +142,11 @@ class NewsDetailFragment : Fragment() {
         binding.newsDetailWebView.apply {
             settings.javaScriptEnabled = true
             webViewClient = object : WebViewClient() {
-                override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
+                override fun onPageStarted(
+                    view: WebView?,
+                    url: String?,
+                    favicon: android.graphics.Bitmap?
+                ) {
                     super.onPageStarted(view, url, favicon)
                     binding.loadingProgressBar.visibility = View.VISIBLE
                     binding.loadingTextInfo.visibility = View.VISIBLE
@@ -58,7 +160,11 @@ class NewsDetailFragment : Fragment() {
                     binding.newsDetailWebView.visibility = View.VISIBLE
                 }
 
-                override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?
+                ) {
                     super.onReceivedError(view, request, error)
                     binding.loadingProgressBar.visibility = View.GONE
                     binding.loadingTextInfo.visibility = View.GONE
@@ -68,7 +174,10 @@ class NewsDetailFragment : Fragment() {
                     binding.errorMessage.text = "Failed to load content. ${error?.description}"
                 }
 
-                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
                     // This ensures that all URLs are loaded within the WebView
                     request?.url?.let { view?.loadUrl(it.toString()) }
                     return true
@@ -97,4 +206,6 @@ class NewsDetailFragment : Fragment() {
             }
         }
     }
+
+
 }

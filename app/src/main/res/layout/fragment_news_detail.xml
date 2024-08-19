@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,29 +6,39 @@
     android:orientation="vertical"
     tools:context=".presentation.ui.fragments.NewsDetailFragment">
 
+    <!-- WebView should be defined first to be lower in the hierarchy -->
+    <WebView
+        android:id="@+id/newsDetailWebView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ProgressBar
         android:id="@+id/loadingProgressBar"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:layout_gravity="center"
-        android:visibility="visible"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-      />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_width="wrap_content"
         android:id="@+id/loadingTextInfo"
-        android:text="@string/loading_content_please_wait"
-        app:layout_constraintTop_toBottomOf="@id/loadingProgressBar"
-        app:layout_constraintStart_toStartOf="@id/loadingProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="@string/loading_content_please_wait"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/loadingProgressBar"
-        android:layout_height="wrap_content" />
+        app:layout_constraintStart_toStartOf="@id/loadingProgressBar"
+        app:layout_constraintTop_toBottomOf="@id/loadingProgressBar" />
 
     <TextView
         android:id="@+id/errorMessage"
@@ -43,15 +52,94 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <WebView
-        android:id="@+id/newsDetailWebView"
+    <View
+        android:id="@+id/overlayView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- FAB and its associated views should be defined last to be on top -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/saveFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:backgroundTint="@color/black"
+            android:src="@drawable/baseline_playlist_add_24"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/shareFab"
+            app:layout_constraintEnd_toEndOf="@id/triggerMenuOpenFab"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/saveFabHintTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/fab_text_bg"
+            android:paddingHorizontal="22dp"
+            android:paddingVertical="8dp"
+            android:text="@string/save_this_article"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/saveFab"
+            app:layout_constraintEnd_toStartOf="@id/saveFab"
+            app:layout_constraintTop_toTopOf="@id/saveFab" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/shareFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:backgroundTint="@color/black"
+            android:src="@drawable/baseline_share_24"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/triggerMenuOpenFab"
+            app:layout_constraintEnd_toEndOf="@id/triggerMenuOpenFab"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/shareFabHintTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/fab_text_bg"
+            android:paddingHorizontal="22dp"
+            android:paddingVertical="8dp"
+            android:text="@string/share"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/shareFab"
+            app:layout_constraintEnd_toStartOf="@id/shareFab"
+            app:layout_constraintTop_toTopOf="@id/shareFab" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/triggerMenuOpenFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp"
+            android:src="@drawable/baseline_more_vert_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

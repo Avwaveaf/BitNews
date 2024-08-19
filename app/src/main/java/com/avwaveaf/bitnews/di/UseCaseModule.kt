@@ -3,6 +3,7 @@ package com.avwaveaf.bitnews.di
 import com.avwaveaf.bitnews.domain.repository.NewsRepository
 import com.avwaveaf.bitnews.domain.usecase.GetNewsHeadlinesUseCase
 import com.avwaveaf.bitnews.domain.usecase.GetSearchedNewsUseCase
+import com.avwaveaf.bitnews.domain.usecase.SaveNewsUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,4 +25,11 @@ class UseCaseModule {
     fun provideSearchedNewsUseCase(newsRepository: NewsRepository): GetSearchedNewsUseCase {
         return GetSearchedNewsUseCase(newsRepository)
     }
+
+    @Singleton
+    @Provides
+    fun provideSaveNewsUseCase(newsRepository: NewsRepository): SaveNewsUseCase {
+        return SaveNewsUseCase(newsRepository)
+    }
+
 }

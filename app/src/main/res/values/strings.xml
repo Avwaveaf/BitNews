@@ -7,4 +7,7 @@
     <string name="news_headline_picture">news headline picture</string>
     <string name="loading_content_please_wait">Loading content please wait...</string>
     <string name="search_favorite_article">Search favorite article..</string>
+    <string name="clear_search">Clear Search</string>
+    <string name="share">Share</string>
+    <string name="save_this_article">Save this article</string>
 </resources>

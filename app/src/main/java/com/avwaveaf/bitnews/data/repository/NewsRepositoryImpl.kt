@@ -2,6 +2,7 @@ package com.avwaveaf.bitnews.data.repository
 
 import com.avwaveaf.bitnews.data.models.ApiResponse
 import com.avwaveaf.bitnews.data.models.Article
+import com.avwaveaf.bitnews.data.repository.datasource.NewsLocalDataSource
 import com.avwaveaf.bitnews.data.repository.datasource.NewsRemoteDataSource
 import com.avwaveaf.bitnews.data.util.Resource
 import com.avwaveaf.bitnews.domain.repository.NewsRepository
@@ -9,7 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 class NewsRepositoryImpl(
-    private val newsRemoteDataSource: NewsRemoteDataSource
+    private val newsRemoteDataSource: NewsRemoteDataSource,
+    private val newsLocalDataSource: NewsLocalDataSource
 ) : NewsRepository {
 
     private fun responseToResource(response: Response<ApiResponse>): Resource<ApiResponse> {
@@ -28,7 +30,7 @@ class NewsRepositoryImpl(
     }
 
     override suspend fun saveNews(article: Article) {
-        TODO("Not yet implemented")
+        newsLocalDataSource.saveArticleToDB(article)
     }
 
     override suspend fun deleteNews(article: Article) {

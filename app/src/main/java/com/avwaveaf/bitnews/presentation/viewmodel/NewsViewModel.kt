@@ -9,16 +9,19 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.avwaveaf.bitnews.data.models.ApiResponse
+import com.avwaveaf.bitnews.data.models.Article
 import com.avwaveaf.bitnews.data.util.Resource
 import com.avwaveaf.bitnews.domain.usecase.GetNewsHeadlinesUseCase
 import com.avwaveaf.bitnews.domain.usecase.GetSearchedNewsUseCase
+import com.avwaveaf.bitnews.domain.usecase.SaveNewsUseCase
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
 class NewsViewModel(
     private val app: Application,
     val getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase,
-    val getSearchedNewsUseCase: GetSearchedNewsUseCase
+    val getSearchedNewsUseCase: GetSearchedNewsUseCase,
+    val saveNewsUseCase: SaveNewsUseCase
 ) : AndroidViewModel(app) {
     val newsHeadlines: MutableLiveData<Resource<ApiResponse>> = MutableLiveData()
     fun getNewsHeadline(countryCode: String, page: Int) = viewModelScope.launch(IO) {
@@ -76,5 +79,9 @@ class NewsViewModel(
 
     }
 
+    // LOCAL DATA SOURCE IMPL
+    fun saveNewsArticle(article: Article) = viewModelScope.launch(IO) {
+        saveNewsUseCase.execute(article)
+    }
 
 }

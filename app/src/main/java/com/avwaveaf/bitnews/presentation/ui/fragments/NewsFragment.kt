@@ -1,10 +1,13 @@
 package com.avwaveaf.bitnews.presentation.ui.fragments
 
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -50,8 +53,36 @@ class NewsFragment : Fragment() {
         setupViewModelAndAdapter()
         initRecyclerView()
         observeNewsHeadlines()
+        observeSearchedNews()
         fetchNewsList()
+        setupSearchView()
     }
+
+    private fun setupSearchView() {
+        binding.apply {
+            searchView.editText.setOnEditorActionListener { textView, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    val query = textView.text.toString()
+                    if (query.isNotEmpty()) {
+                        searchView.hide()
+                        searchBar.setText(query)
+                        newsAdapter.submitList(null) // Clear previous results
+                        fetchSearchedNews(query)
+                    } else {
+                        // Clear search and return to default news list
+                        searchBar.setText("")
+                        newsAdapter.submitList(null)
+                        currentPage = 1
+                        fetchNewsList()
+                    }
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+    }
+
 
     private fun setupViewModelAndAdapter() {
         newsViewModel = (activity as MainActivity).viewModel
@@ -94,7 +125,11 @@ class NewsFragment : Fragment() {
     private fun loadMoreItems() {
         if (currentPage < totalPages) {
             currentPage++
-            fetchNewsList()
+            if (binding.searchBar.text.isEmpty()) {
+                fetchNewsList()
+            } else {
+                fetchSearchedNews(binding.searchBar.text.toString())
+            }
         }
     }
 
@@ -105,6 +140,50 @@ class NewsFragment : Fragment() {
         showProgressBar()
         lifecycleScope.launch {
             newsViewModel.getNewsHeadline(countryCode, currentPage)
+        }
+    }
+
+    private fun fetchSearchedNews(searchQuery: String) {
+        if (isLoading) return
+
+        isLoading = true
+        showProgressBar()
+        currentPage = 1 // Reset to first page
+        isLastPage = false // Reset last page flag
+        lifecycleScope.launch {
+            newsViewModel.searchNews(searchQuery, currentPage)
+        }
+    }
+
+    private fun observeSearchedNews() {
+        newsViewModel.searchedNews.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { newsResponse ->
+                        val newItems = newsResponse.articles
+                        if (currentPage == 1) {
+                            newsAdapter.submitList(newItems)
+                        } else {
+                            val currentList = ArrayList(newsAdapter.currentList)
+                            currentList.addAll(newItems)
+                            newsAdapter.submitList(currentList)
+                        }
+                        totalPages = (newsResponse.totalResults + 19) / 20 // Round up division
+                        isLastPage = currentPage == totalPages
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { errorMessage ->
+                        Toast.makeText(activity, "Error: $errorMessage", Toast.LENGTH_LONG).show()
+                    }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+            isLoading = false
         }
     }
 
@@ -135,7 +214,7 @@ class NewsFragment : Fragment() {
                 }
 
                 is Resource.Loading -> {
-                    // Progress bar visibility is handled in fetchNewsList
+                    showProgressBar()
                 }
             }
             isLoading = false

@@ -3,6 +3,7 @@ package com.avwaveaf.bitnews.di
 import android.app.Application
 import com.avwaveaf.bitnews.domain.usecase.GetNewsHeadlinesUseCase
 import com.avwaveaf.bitnews.domain.usecase.GetSearchedNewsUseCase
+import com.avwaveaf.bitnews.domain.usecase.SaveNewsUseCase
 import com.avwaveaf.bitnews.presentation.viewmodel.NewsViewModelFactory
 import dagger.Module
 import dagger.Provides
@@ -19,8 +20,14 @@ class FactoryModule {
     fun provideNewsViewModelFactory(
         app: Application,
         getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase,
-        getSearchedNewsUseCase: GetSearchedNewsUseCase
+        getSearchedNewsUseCase: GetSearchedNewsUseCase,
+        saveNewsUseCase: SaveNewsUseCase
     ): NewsViewModelFactory {
-        return NewsViewModelFactory(app, getNewsHeadlinesUseCase, getSearchedNewsUseCase)
+        return NewsViewModelFactory(
+            app,
+            getNewsHeadlinesUseCase,
+            getSearchedNewsUseCase,
+            saveNewsUseCase
+        )
     }
 }

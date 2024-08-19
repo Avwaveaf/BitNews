@@ -1,6 +1,7 @@
 package com.avwaveaf.bitnews.di
 
 import com.avwaveaf.bitnews.data.repository.NewsRepositoryImpl
+import com.avwaveaf.bitnews.data.repository.datasource.NewsLocalDataSource
 import com.avwaveaf.bitnews.data.repository.datasource.NewsRemoteDataSource
 import com.avwaveaf.bitnews.domain.repository.NewsRepository
 import dagger.Module
@@ -15,7 +16,10 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideNewsRepository(newsRemoteDataSource: NewsRemoteDataSource): NewsRepository {
-        return NewsRepositoryImpl(newsRemoteDataSource)
+    fun provideNewsRepository(
+        newsRemoteDataSource: NewsRemoteDataSource,
+        newsLocalDataSource: NewsLocalDataSource
+    ): NewsRepository {
+        return NewsRepositoryImpl(newsRemoteDataSource, newsLocalDataSource)
     }
 }
