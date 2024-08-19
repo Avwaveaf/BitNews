@@ -2,6 +2,7 @@ package com.avwaveaf.bitnews.data.models
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Article(
     @SerializedName("author")
@@ -13,11 +14,11 @@ data class Article(
     @SerializedName("publishedAt")
     val publishedAt: String?,
     @SerializedName("source")
-    val source: String?,
+    val source: Source?,
     @SerializedName("title")
     val title: String?,
     @SerializedName("url")
     val url: String?,
     @SerializedName("urlToImage")
     val urlToImage: String?
-)
+) : Serializable

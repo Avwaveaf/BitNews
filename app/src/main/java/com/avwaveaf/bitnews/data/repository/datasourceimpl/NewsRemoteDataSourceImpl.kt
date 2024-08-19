@@ -9,10 +9,7 @@ class NewsRemoteDataSourceImpl(
     private val newsApiService: NewsApiService,
 ) : NewsRemoteDataSource {
     override suspend fun getTopHeadlines(country:String, page:Int): Response<ApiResponse> {
-        return newsApiService.getTopHeadlines(country, page)
+        return newsApiService.getTopHeadlines( country, page)
     }
 
-    override suspend fun getEverything(page:Int): Response<ApiResponse> {
-        return newsApiService.getEverything(page)
-    }
 }

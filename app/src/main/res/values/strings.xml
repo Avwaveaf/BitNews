@@ -4,4 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="menu_title_saved">Saved</string>
     <string name="menu_title_headlines">Headlines</string>
+    <string name="news_headline_picture">news headline picture</string>
+    <string name="loading_content_please_wait">Loading content please wait...</string>
+    <string name="search_favorite_article">Search favorite article..</string>
 </resources>

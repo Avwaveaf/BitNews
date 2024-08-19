@@ -6,15 +6,33 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.avwaveaf.bitnews.R
+import com.avwaveaf.bitnews.data.models.Article
 import com.avwaveaf.bitnews.databinding.ActivityMainBinding
+import com.avwaveaf.bitnews.databinding.NewsListItemBinding
+import com.avwaveaf.bitnews.databinding.TopHeadlineNewsItemBinding
+import com.avwaveaf.bitnews.presentation.adapter.GenericRecyclerViewAdapter
+import com.avwaveaf.bitnews.presentation.viewmodel.NewsViewModel
+import com.avwaveaf.bitnews.presentation.viewmodel.NewsViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 private const val TAG = "MainActivity"
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var factory: NewsViewModelFactory
+
+    lateinit var viewModel: NewsViewModel
+
+    @Inject
+    lateinit var newsAdapter: GenericRecyclerViewAdapter<Article, NewsListItemBinding, TopHeadlineNewsItemBinding>
+
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +41,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupBottomNavigation()
+        setupViewModel()
         setupEdgeToEdge()
+    }
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(this, factory)[NewsViewModel::class.java]
     }
 
     private fun setupEdgeToEdge() {

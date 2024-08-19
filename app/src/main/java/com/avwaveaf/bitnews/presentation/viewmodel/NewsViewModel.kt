@@ -19,7 +19,6 @@ class NewsViewModel(
     val getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase
 ) : AndroidViewModel(app) {
     val newsHeadlines: MutableLiveData<Resource<ApiResponse>> = MutableLiveData()
-
     fun getNewsHeadline(countryCode: String, page: Int) = viewModelScope.launch(IO) {
         // setup loading state resource first
         newsHeadlines.postValue(Resource.Loading())
@@ -36,6 +35,7 @@ class NewsViewModel(
         }
 
     }
+
 
 
     fun isInternetAvailable(context: Context): Boolean {

@@ -1,6 +1,5 @@
 package com.avwaveaf.bitnews.di
 
-import com.avwaveaf.bitnews.BuildConfig
 import com.avwaveaf.bitnews.data.api.NewsApiService
 import dagger.Module
 import dagger.Provides
@@ -20,7 +19,7 @@ class NetworkModule {
     fun provideRetrofitInstance(): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BuildConfig.BASE_URL)
+            .baseUrl("https://newsapi.org/v2/")
             .build()
     }
 
