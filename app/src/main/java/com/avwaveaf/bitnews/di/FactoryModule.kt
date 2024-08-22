@@ -1,7 +1,9 @@
 package com.avwaveaf.bitnews.di
 
 import android.app.Application
+import com.avwaveaf.bitnews.domain.usecase.DeleteSavedNewsUseCase
 import com.avwaveaf.bitnews.domain.usecase.GetNewsHeadlinesUseCase
+import com.avwaveaf.bitnews.domain.usecase.GetSavedNewsUseCase
 import com.avwaveaf.bitnews.domain.usecase.GetSearchedNewsUseCase
 import com.avwaveaf.bitnews.domain.usecase.SaveNewsUseCase
 import com.avwaveaf.bitnews.presentation.viewmodel.NewsViewModelFactory
@@ -21,13 +23,17 @@ class FactoryModule {
         app: Application,
         getNewsHeadlinesUseCase: GetNewsHeadlinesUseCase,
         getSearchedNewsUseCase: GetSearchedNewsUseCase,
-        saveNewsUseCase: SaveNewsUseCase
+        saveNewsUseCase: SaveNewsUseCase,
+        getSavedNewsUseCase: GetSavedNewsUseCase,
+        deleteSavedNewsUseCase: DeleteSavedNewsUseCase
     ): NewsViewModelFactory {
         return NewsViewModelFactory(
             app,
             getNewsHeadlinesUseCase,
             getSearchedNewsUseCase,
-            saveNewsUseCase
+            saveNewsUseCase,
+            getSavedNewsUseCase,
+            deleteSavedNewsUseCase
         )
     }
 }

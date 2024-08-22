@@ -16,6 +16,9 @@ import androidx.navigation.fragment.navArgs
 import com.avwaveaf.bitnews.R
 import com.avwaveaf.bitnews.data.models.Article
 import com.avwaveaf.bitnews.databinding.FragmentNewsDetailBinding
+import com.avwaveaf.bitnews.presentation.ui.activity.MainActivity
+import com.avwaveaf.bitnews.presentation.viewmodel.NewsViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class NewsDetailFragment : Fragment() {
 
@@ -25,6 +28,8 @@ class NewsDetailFragment : Fragment() {
         get() = args.selectedArticle
 
     private var isFabExpanding = false
+
+    private lateinit var newsViewModel: NewsViewModel
 
 
     private val emergeFromBottomAnim: Animation by lazy {
@@ -54,9 +59,15 @@ class NewsDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupViewModel()
         setupWebView()
         fabSetup()
         setupOverlayBgFab()
+        setupFabOnClickListener(view)
+    }
+
+    private fun setupViewModel() {
+        newsViewModel = (activity as MainActivity).viewModel
     }
 
     private fun setupOverlayBgFab() {
@@ -100,6 +111,14 @@ class NewsDetailFragment : Fragment() {
 
 
         isFabExpanding = true
+
+    }
+
+    private fun setupFabOnClickListener(view: View) {
+        binding.saveFab.setOnClickListener {
+            newsViewModel.saveNewsArticle(selectedArticle)
+            Snackbar.make(view, "Article saved !", Snackbar.LENGTH_LONG).show()
+        }
     }
 
     private fun minifyFab() {

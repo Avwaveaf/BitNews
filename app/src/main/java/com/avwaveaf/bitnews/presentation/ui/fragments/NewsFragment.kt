@@ -1,13 +1,15 @@
 package com.avwaveaf.bitnews.presentation.ui.fragments
 
 
+import CarouselAdapter
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -29,6 +31,16 @@ class NewsFragment : Fragment() {
     private lateinit var newsViewModel: NewsViewModel
     private lateinit var binding: FragmentNewsBinding
     private lateinit var newsAdapter: GenericRecyclerViewAdapter<Article, NewsListItemBinding, TopHeadlineNewsItemBinding>
+
+    // SETUP CAROUSEL
+    private val sliderHandler = Handler(Looper.getMainLooper())
+    private val sliderRunnable = kotlinx.coroutines.Runnable {
+        binding.carouselViewPager.currentItem =
+            (binding.carouselViewPager.currentItem + 1) % binding.carouselViewPager.adapter!!.itemCount
+    }
+
+
+    private var carouselItems: List<Article> = emptyList()
 
     private var countryCode = "us"
     private var currentPage = 1
@@ -56,6 +68,32 @@ class NewsFragment : Fragment() {
         observeSearchedNews()
         fetchNewsList()
         setupSearchView()
+    }
+
+    private fun setupSlider() {
+        if (carouselItems.isNotEmpty()) {
+            val carouselAdapter = CarouselAdapter(carouselItems)
+            binding.carouselViewPager.adapter = carouselAdapter
+            startAutoSlide()
+        }
+    }
+
+    private fun startAutoSlide() {
+        sliderHandler.postDelayed(sliderRunnable, 5000)
+    }
+    private fun stopAutoSlide() {
+        sliderHandler.removeCallbacks(sliderRunnable)
+    }
+    override fun onResume() {
+        super.onResume()
+        if (carouselItems.isNotEmpty()) {
+            startAutoSlide()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopAutoSlide()
     }
 
     private fun setupSearchView() {
@@ -173,12 +211,14 @@ class NewsFragment : Fragment() {
                         isLastPage = currentPage == totalPages
                     }
                 }
+
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let { errorMessage ->
                         Toast.makeText(activity, "Error: $errorMessage", Toast.LENGTH_LONG).show()
                     }
                 }
+
                 is Resource.Loading -> {
                     showProgressBar()
                 }
@@ -196,6 +236,9 @@ class NewsFragment : Fragment() {
                         val newItems = newsResponse.articles
                         if (currentPage == 1) {
                             newsAdapter.submitList(newItems)
+                            // take 5 elements from new article
+                            carouselItems = newItems.take(5)
+                            setupSlider()
                         } else {
                             val currentList = ArrayList(newsAdapter.currentList)
                             currentList.addAll(newItems)
