@@ -59,6 +59,9 @@ android {
 
 dependencies {
 
+    // SPLASH SCREEN DEP
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     //NAVIGATION COMPONENT DEPS
     val nav_version = "2.7.7"
     // Kotlin

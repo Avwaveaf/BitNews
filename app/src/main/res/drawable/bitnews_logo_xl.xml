@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Original shape -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M54,60 C50,90 50,140 50,190 C50,220 70,240 100,40 C130,240 150,220 7,190 L150,140 L100,140 L80,40 Z" />
+
+    <!-- 'i' dot -->
+    <path
+        android:fillColor="#FBC02D"
+        android:pathData="M100,0 C107,0 113,6 113,13 C113,20 107,26 100,26 C93,26 87,20 87,13 C87,6 93,0 100,0" />
+
+    <!-- 'i' stem -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M87,40 L113,40 L113,70 L87,70 Z" />
+
+</vector>
