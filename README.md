@@ -71,3 +71,11 @@ The *BitNews App* is a mobile news portal designed to allow users to discover an
 8. Implement **Error Handling** for network-related issues and provide appropriate user feedback.
 9. Maintain **Bottom Navigation** for switching between the main news feed and bookmarked articles.
 
+
+## Try the App
+
+If you want to try the **BitNews** app, simply download the latest release from the [Releases Page](https://github.com/Avwaveaf/BitNews/releases/tag/v1.0.6). 
+
+After downloading the APK, install it on your Android device, and you're ready to explore the latest news!
+
+
